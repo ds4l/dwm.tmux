@@ -3,6 +3,8 @@
 window_panes=
 killlast=
 mfact=
+window_index=
+pane_index=
 
 newpane() {
   tmux \
@@ -40,6 +42,18 @@ prevpane() {
   tmux select-pane -t :.-
 }
 
+movepane() {
+  window=$1
+  if tmux has-session -t ":${window}"; then
+    tmux join-pane -t ":${window}"
+    layouttile
+    # back to previous window
+    tmux selectw -t "${window_index}" && layouttile || true
+  else
+    tmux break-pane -t ":${window}" -d && layouttile || true
+  fi
+}
+
 rotateccw() {
   tmux rotate-window -U\; select-pane -t 0
 }
@@ -49,7 +63,11 @@ rotatecw() {
 }
 
 zoom() {
-  tmux swap-pane -s :. -t :.0\; select-pane -t :.0
+  if [ $pane_index -eq 0 ]; then
+    tmux swap-pane -s :. -t :.1\; select-pane -t :.0
+  else
+    tmux swap-pane -s :. -t :.0\; select-pane -t :.0
+  fi
 }
 
 layouttile() {
@@ -80,7 +98,7 @@ decmfact() {
 
 window() {
   window=$1
-  tmux selectw -t $window
+  tmux selectw -t $window || tmux new-window -t $window
 }
 
 if [ $# -lt 1 ]; then
@@ -90,10 +108,12 @@ fi
 
 command=$1;shift
 args=$*
-set -- $(tmux display -p "#{window_panes} #{killlast} #{mfact}")
+set -- $(tmux display -p "#{window_panes} #{killlast} #{mfact} #{window_index} #{pane_index}")
 window_panes=$1
 killlast=$2
 mfact=$3
+window_index=$4
+pane_index=$5
 
 case $command in
   newpane) newpane;;
@@ -101,6 +121,7 @@ case $command in
   killpane) killpane;;
   nextpane) nextpane;;
   prevpane) prevpane;;
+  movepane) movepane $args;;
   rotateccw) rotateccw;;
   rotatecw) rotatecw;;
   zoom) zoom;;
