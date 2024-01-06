@@ -37,16 +37,16 @@ set -g command-alias[131] movepane9='run-shell "dwm.tmux movepane 9"'
 
 set-hook -g pane-exited 'run-shell "dwm.tmux layouttile"'
 
-bind -n M-n newpane
+bind -n M-Enter newpane
 bind -n M-w newpanecurdir
-bind -n M-c killpane
+# bind -n M-c killpane
 bind -n M-j nextpane
 bind -n M-k prevpane
 bind -n M-< rotateccw
 bind -n M-> rotatecw
-bind -n M-Enter zoom
+bind -n M-Space zoom
 bind -n M-t layouttile
-bind -n M-Space float
+bind -n M-f float
 bind -n M-h decmfact
 bind -n M-l incmfact
 bind -n M-0 window0
