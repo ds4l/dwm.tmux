@@ -5,6 +5,7 @@ killlast=
 mfact=
 window_index=
 pane_index=
+window_zoomed_flag=
 
 newpane() {
   tmux \
@@ -35,11 +36,19 @@ killpane() {
 }
 
 nextpane() {
-  tmux select-pane -t :.+
+  if [ $window_zoomed_flag -eq 1 ]; then
+    tmux select-pane -t :.+\; resize-pane -Z
+  else
+    tmux select-pane -t :.+
+  fi
 }
 
 prevpane() {
-  tmux select-pane -t :.-
+  if [ $window_zoomed_flag -eq 1 ]; then
+    tmux select-pane -t :.-\; resize-pane -Z
+  else
+    tmux select-pane -t :.-
+  fi
 }
 
 movepane() {
@@ -108,12 +117,13 @@ fi
 
 command=$1;shift
 args=$*
-set -- $(tmux display -p "#{window_panes} #{killlast} #{mfact} #{window_index} #{pane_index}")
+set -- $(tmux display -p "#{window_panes} #{killlast} #{mfact} #{window_index} #{pane_index} #{window_zoomed_flag}")
 window_panes=$1
 killlast=$2
 mfact=$3
 window_index=$4
 pane_index=$5
+window_zoomed_flag=$6
 
 case $command in
   newpane) newpane;;
