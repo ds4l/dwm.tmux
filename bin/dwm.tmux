@@ -72,10 +72,12 @@ rotatecw() {
 }
 
 zoom() {
-  if [ $pane_index -eq 0 ]; then
-    tmux swap-pane -s :. -t :.1\; select-pane -t :.0
-  else
-    tmux swap-pane -s :. -t :.0\; select-pane -t :.0
+  if [ $window_panes -gt 1 ]; then
+    if [ $pane_index -eq 0 ]; then
+      tmux swap-pane -s :. -t :.1\; select-pane -t :.0
+    else
+      tmux swap-pane -s :. -t :.0\; select-pane -t :.0
+    fi
   fi
 }
 
