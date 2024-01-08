@@ -59,7 +59,7 @@ movepane() {
     # back to previous window
     tmux selectw -t "${window_index}" && layouttile || true
   else
-    tmux break-pane -t ":${window}" -d && layouttile || true
+    tmux break-pane -t ":${window}" -d -n '' && layouttile || true
   fi
 }
 
@@ -109,7 +109,7 @@ decmfact() {
 
 window() {
   window=$1
-  tmux selectw -t $window || tmux new-window -t $window
+  tmux selectw -t $window || tmux new-window -t $window -n ''
 }
 
 if [ $# -lt 1 ]; then
